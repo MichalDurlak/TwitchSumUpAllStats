@@ -1,1 +1,1 @@
-# TwitchSumUpAllStats
+# TwitchSumupAllStats
