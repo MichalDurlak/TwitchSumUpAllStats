@@ -13,7 +13,7 @@ public class ReadFileArchive {
     public String readSpecificFileFromArchive(String fileName) {
         String dataResponse = null;
         try {
-            File myObj = new File(fileName);
+            File myObj = new File("Archive/"+fileName);
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();

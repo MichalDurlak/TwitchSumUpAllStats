@@ -32,7 +32,7 @@ public class AppService {
         return jsonObjectResponse;
     }
 
-    public String parseCountResponseFromXayo(int countFromXayo){
+    public static String parseCountResponseFromXayo(int countFromXayo){
         int getMinutes = countFromXayo*5;
         String weeks = getMinutes/7/24/60 +"tygodni";
         String days = getMinutes/24/60%7 +"dni";
@@ -40,5 +40,30 @@ public class AppService {
         String minutes = getMinutes%60 +"minut";
         return weeks + ", " +days+ ", " +hours+ ", " +minutes;
 //        return getMinutes/7/24/60 + ":" + getMinutes/24/60%7 + ":" + getMinutes/60%24 + ':' + getMinutes%60;
+    }
+
+
+    //NEW JSON PARSER
+    public JSONObject parseResponseFromXayoNew(String originalResponseFromXayo){
+        JSONArray jsonArray = new JSONArray(originalResponseFromXayo);
+
+        JSONObject jsonObjectResponseNew = new JSONObject();
+        for (int i=0 ; i<jsonArray.length() ; i++){
+
+            JSONObject jsonObjectTemp;
+            jsonObjectTemp = jsonArray.getJSONObject(i);
+
+            String streamerTemp = jsonObjectTemp.getString("streamer");
+            String parsedCountTemp = parseCountResponseFromXayo(jsonObjectTemp.getInt("count"));
+            int countTemp = jsonObjectTemp.getInt("count");
+
+            JSONObject jsonObjectStreamerTemp = new JSONObject();
+            jsonObjectStreamerTemp.put("streamer",streamerTemp).put("parsedCount",parsedCountTemp).put("count",countTemp);
+
+            jsonObjectResponseNew.append("xayo.pl",jsonObjectStreamerTemp);
+
+        }
+
+        return jsonObjectResponseNew;
     }
 }

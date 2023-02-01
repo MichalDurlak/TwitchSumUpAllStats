@@ -28,7 +28,6 @@ public class AppController {
     ReadFileArchive readFileArchive;
 
     @GetMapping("/WriteToArchive")
-    @Scheduled(cron = "0 0 1 * * *")
     public String getResults() throws FileNotFoundException, UnsupportedEncodingException {
         //Request to xayo.pl login -> xmichulol
         String request_xmichulol = appService.getResponseFromXayo("xmichulol");
@@ -39,7 +38,24 @@ public class AppController {
 
     @GetMapping("/ReadFromArchive")
     public String getOdczytPliku(String data){
-        return readFileArchive.readSpecificFileFromArchive("Archive/"+data);
+        return readFileArchive.readSpecificFileFromArchive(data);
     }
 
+
+    @GetMapping("/Stats")
+    public String getStats(String username) throws FileNotFoundException, UnsupportedEncodingException {
+        String requestForSpecificTwitchUsername = appService.getResponseFromXayo(username);
+        JSONObject jsonObject = appService.parseResponseFromXayoNew(requestForSpecificTwitchUsername);
+        createFileArchive.createTextFile(jsonObject.toString(), username);
+        return jsonObject.toString();
+    }
+
+    @GetMapping("/AutoStats")
+    @Scheduled(cron = "0 0 1 * * *")
+    public String getAutoStats() throws FileNotFoundException, UnsupportedEncodingException {
+        String requestAsXmichulol = appService.getResponseFromXayo("xmichulol");
+        JSONObject jsonObject = appService.parseResponseFromXayoNew(requestAsXmichulol);
+        createFileArchive.createTextFile(jsonObject.toString(), "xmichulol");
+        return jsonObject.toString();
+    }
 }
